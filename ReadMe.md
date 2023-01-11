@@ -4,7 +4,7 @@
 <p align="center">
   <img width="50%" src="https://github.com/TencentAILabHealthcare/scpDeconv/blob/main/img/img1.png">
 </p>
-More details can be found in paper: https://www.biorxiv.org/content/10.1101/2022.11.25.517895v1
+More details can be found in paper: https://www.biorxiv.org/content/10.1101/2022.11.25.517895v2
 
 ## Setup
 
