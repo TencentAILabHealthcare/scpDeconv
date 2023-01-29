@@ -2,7 +2,7 @@
 
 **scpDeconv** is a novel deep learning-based deconvolution method tailored to single-cell proteomic data sets. scpDeconv uses an autoencoder to leverage the information from bulk proteomic data to improve the quality of single-cell proteomic data, and employs a domain adversarial architecture to bridge the single-cell and bulk data distributions and transfer labels from single-cell data set to bulk data set.
 <p align="center">
-  <img width="50%" src="https://github.com/TencentAILabHealthcare/scpDeconv/blob/main/img/img1.png">
+  <img width="60%" src="https://github.com/TencentAILabHealthcare/scpDeconv/blob/main/img/img1.png">
 </p>
 More details can be found in paper: https://www.biorxiv.org/content/10.1101/2022.11.25.517895v2
 
@@ -134,6 +134,10 @@ The parameters of scpDeconv are listed in `options.py` script, which need to be 
 - `path`: data path for output files
 
 - `target_predicted_fraction.csv`: output file for predicted cell type proportions
+
+## Time Cost
+
+Taking demo murine_cellline data (4000 pseudo-samples) and default parameters as an example, typical running time on a "normal" desktop computer is about 3 minutes.
 
 ## Disclaimer
 
