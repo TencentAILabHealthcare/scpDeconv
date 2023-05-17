@@ -4,10 +4,7 @@ import sys
 # os.chdir('/apdcephfs/private_gelseywang/scDeconvolution/Script/git/scpDeconv')
 import argparse
 import options
-from model.refer_mixup import *
-from model.AEimpute_model import *
-from model.DANN_model import *
-from model.utils import *
+from model import *
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--dataset", type=str, default='murine_cellline', help='The name of benchmarking datasets')
