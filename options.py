@@ -2,13 +2,11 @@ from collections import defaultdict
 
 option_list = defaultdict(list)
 
-def get_option_list():
+def get_option_list(dataset):
 	
-	dataset = 'human_breast_atlas_PP'
-
 	if dataset == 'human_breast_atlas_PP':
 		# Input parameters
-		option_list['data_dir']='Data/human_breast_atlas_PP/'
+		option_list['data_dir']='./data/human_breast_atlas_PP/'
 		option_list['ref_dataset_name'] = 'Human_Breast_Atlas_scProteome_normed_aligned_individual1.h5ad'
 		option_list['target_dataset_name'] = 'Human_Breast_Atlas_scProteome_normed_aligned_individual3.h5ad'
 		option_list['random_type']="cell_type"
@@ -23,11 +21,11 @@ def get_option_list():
 		option_list['epochs'] = 30
 		option_list['learning_rate'] = 0.0001
 		# Output parameters
-		option_list['SaveResultsDir'] = "Result/human_breast_atlas_PP/"
+		option_list['SaveResultsDir'] = "./Result/human_breast_atlas_PP/"
 
-	elif dataset == 'murine_cellline'
+	elif dataset == 'murine_cellline':
 		# Input parameters
-		option_list['data_dir']='Data/murine_cellline/'
+		option_list['data_dir']='./data/murine_cellline/'
 		option_list['ref_dataset_name'] = 'murine_N2_SCP.h5ad'
 		option_list['target_dataset_name'] = 'murine_nanoPOTS_SCP.h5ad'
 		option_list['random_type']="CellType"
@@ -42,11 +40,11 @@ def get_option_list():
 		option_list['epochs'] = 30
 		option_list['learning_rate'] = 0.0001
 		# Output parameters
-		option_list['SaveResultsDir'] = "Result/murine_cellline/"
+		option_list['SaveResultsDir'] = "./Result/murine_cellline/"
 
-	elif dataset == 'human_cellline'
+	elif dataset == 'human_cellline':
 		# Input parameters
-		option_list['data_dir']='Data/human_cellline/'
+		option_list['data_dir']='./data/human_cellline/'
 		option_list['ref_dataset_name'] = 'pSCoPE_Huffman_PDAC+pSCoPE_Leduc+SCoPE2_Leduc_integrated_SCP.h5ad'
 		option_list['target_dataset_name'] = 'T-SCP+plexDIA_integrated_SCP.h5ad'
 		option_list['random_type']="cell_type"
@@ -61,6 +59,6 @@ def get_option_list():
 		option_list['epochs'] = 30
 		option_list['learning_rate'] = 0.0001
 		# Output parameters
-		option_list['SaveResultsDir'] = "Result/human_cellline/"
+		option_list['SaveResultsDir'] = "./Result/human_cellline/"
 
 	return option_list

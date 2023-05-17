@@ -6,10 +6,11 @@ import torch.utils.data as Data
 import random
 import numpy as np
 import pandas as pd
-import anndata as ad
 from collections import defaultdict
+import warnings
+warnings.filterwarnings('ignore')
 
-import utils
+from model.utils import *
 
 class EncoderBlock(nn.Module):
     def __init__(self, in_dim, out_dim, do_rates):
@@ -138,7 +139,7 @@ class DANN(object):
                 domain_pred_target = self.discriminator_da(embedding_target)
 
                 # caculate loss 
-                pred_loss = utils.L1_loss(frac_pred, source_y.cuda())       
+                pred_loss = L1_loss(frac_pred, source_y.cuda())       
                 pred_loss_epoch += pred_loss.data.item()
                 disc_loss = criterion_da(domain_pred_source, source_label) + criterion_da(domain_pred_target, target_label)
                 disc_loss_epoch += disc_loss.data.item()
@@ -176,15 +177,15 @@ class DANN(object):
                 if self.target_type == "simulated":
                     ### model validation on target data ###
                     target_preds, ground_truth = self.prediction()
-                    epoch_ccc, epoch_rmse, epoch_corr = utils.compute_metrics(target_preds, ground_truth)
+                    epoch_ccc, epoch_rmse, epoch_corr = compute_metrics(target_preds, ground_truth)
                     metric_logger['target_ccc'].append(epoch_ccc)
                     metric_logger['target_rmse'].append(epoch_rmse)
                     metric_logger['target_corr'].append(epoch_corr)
 
         if self.target_type == "simulated":
-            utils.SaveLossPlot(self.outdir, metric_logger, loss_type = ['pred_loss','disc_loss','disc_loss_DA','target_ccc','target_rmse','target_corr'], output_prex = 'Loss_metric_plot_stage3')
+            SaveLossPlot(self.outdir, metric_logger, loss_type = ['pred_loss','disc_loss','disc_loss_DA','target_ccc','target_rmse','target_corr'], output_prex = 'Loss_metric_plot_stage3')
         elif self.target_type == "real":
-            utils.SaveLossPlot(self.outdir, metric_logger, loss_type = ['pred_loss','disc_loss','disc_loss_DA'], output_prex = 'Loss_metric_plot_stage3')
+            SaveLossPlot(self.outdir, metric_logger, loss_type = ['pred_loss','disc_loss','disc_loss_DA'], output_prex = 'Loss_metric_plot_stage3')
             
     def prediction(self):
         self.model_da.eval()

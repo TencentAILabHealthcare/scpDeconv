@@ -1,15 +1,24 @@
 import os
+import sys
+# sys.path.append('/apdcephfs/private_gelseywang/scDeconvolution/Script/git/scpDeconv/model')
+# os.chdir('/apdcephfs/private_gelseywang/scDeconvolution/Script/git/scpDeconv')
+import argparse
 import options
-from model.refer_mixup import ReferMixup
-from model.AEimpute_model import AEimpute
-from model.DANN_model import DANN
+from model.refer_mixup import *
+from model.AEimpute_model import *
+from model.DANN_model import *
 from model.utils import *
 
+parser = argparse.ArgumentParser()
+parser.add_argument("--dataset", type=str, default='murine_cellline', help='The name of benchmarking datasets')
+args = parser.parse_args()
+
 def main():
+	dataset = args.dataset
 	### Start Running scpDecon ###
 	print("------Start Running scpDecon------")
 
-	opt = options.get_option_list()
+	opt = options.get_option_list(dataset = dataset)
 
 	### Run Stage 1 ###
 	print("------Start Running Stage 1 : Mixup reference------")
@@ -36,13 +45,14 @@ def main():
 	### Run Stage 4 ###
 	print("------Start Running Stage 4 : Inference for target data------")
 	if opt['target_type'] == "simulated":
-        final_preds_target, ground_truth_target = model_da.prediction()
-        SavePredPlot(opt['SaveResultsDir'], final_preds_target, ground_truth_target)
-        final_preds_target.to_csv(os.path.join(opt['SaveResultsDir'], "target_predicted_fractions.csv"))
+	    final_preds_target, ground_truth_target = model_da.prediction()
+	    SavePredPlot(opt['SaveResultsDir'], final_preds_target, ground_truth_target)
+	    final_preds_target.to_csv(os.path.join(opt['SaveResultsDir'], "target_predicted_fractions.csv"))
 
-    elif opt['target_type'] == "real":
-        final_preds_target, _ = model_da.prediction()
-        final_preds_target.to_csv(os.path.join(opt['SaveResultsDir'], "target_predicted_fraction.csv"))
+	elif opt['target_type'] == "real":
+	    final_preds_target, _ = model_da.prediction()
+	    final_preds_target.to_csv(os.path.join(opt['SaveResultsDir'], "target_predicted_fraction.csv"))
+	print("Stage 4 : Inference for target data finished!")
 
 if __name__ == "__main__":
     main()

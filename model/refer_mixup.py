@@ -5,8 +5,10 @@ import anndata as ad
 import numpy as np
 import scipy
 import scanpy as sc
+import warnings
+warnings.filterwarnings('ignore')
 
-import utils
+from model.utils import *
 
 class ReferMixup(object):
     def __init__(self, option_list):  
@@ -44,8 +46,8 @@ class ReferMixup(object):
         train_data = self.align_dataset(train_data_x, train_data_y, used_features)
         target_data = target_data[:,used_features]
 
-        # utils.SavetSNEPlot(self.outdir, train_data, output_prex='Pseudo_Bulk_Source_'+str(self.train_sample_num))
-        # utils.SavetSNEPlot(self.outdir, target_data, output_prex='Pseudo_Bulk_Target_'+str(self.target_sample_num))
+        # SavetSNEPlot(self.outdir, train_data, output_prex='Pseudo_Bulk_Source_'+str(self.train_sample_num))
+        # SavetSNEPlot(self.outdir, target_data, output_prex='Pseudo_Bulk_Target_'+str(self.target_sample_num))
             
         return train_data, target_data
 
@@ -99,7 +101,7 @@ class ReferMixup(object):
 
         # Scale pseudo-bulk data
         if self.normalize:
-            sim_data_x_scale = utils.sample_normalize(sim_data_x, normalize_method=self.normalize)
+            sim_data_x_scale = sample_normalize(sim_data_x, normalize_method=self.normalize)
             sim_data_x_scale = pd.DataFrame(sim_data_x_scale, columns=sim_data_x.columns)
             sim_data_x = sim_data_x_scale
 
@@ -153,7 +155,7 @@ class ReferMixup(object):
             data_h5ad.X = pd.DataFrame(data_h5ad.X).fillna(0)
     
         if self.normalize:
-            data_h5ad.X = utils.sample_normalize(data_h5ad.X, normalize_method=self.normalize)
+            data_h5ad.X = sample_normalize(data_h5ad.X, normalize_method=self.normalize)
 
         return data_h5ad
 
@@ -175,7 +177,7 @@ class ReferMixup(object):
         fracs = self.mixup_fraction(celltype_num)
 
         samp_fracs = np.multiply(fracs, self.sample_size)
-        samp_fracs = list(map(int, samp_fracs))
+        samp_fracs = list(map(round, samp_fracs))
         
         # Make complete fracions
         fracs_complete = [0] * len(celltypes)

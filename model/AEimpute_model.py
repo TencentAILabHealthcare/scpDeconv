@@ -3,15 +3,16 @@ import torch
 import torch.nn as nn
 import torch.backends.cudnn as cudnn
 import torch.utils.data as Data
-from torch.distributions import Dirichlet
 import random
 import numpy as np
 import pandas as pd
 import anndata as ad
 import scanpy as sc
 from collections import defaultdict
+import warnings
+warnings.filterwarnings('ignore')
 
-import utils
+from model.utils import *
 
 class EncoderBlock(nn.Module):
     def __init__(self, in_dim, out_dim):
@@ -45,9 +46,9 @@ class AEimpute(object):
         self.outdir = option_list['SaveResultsDir']
 
         cudnn.deterministic = True
-        torch.cuda.manual_seed_all(seed)
-        torch.manual_seed(seed)
-        random.seed(seed)
+        torch.cuda.manual_seed_all(self.seed)
+        torch.manual_seed(self.seed)
+        random.seed(self.seed)
 
     def AEimpute_model(self, celltype_num):
         feature_num = len(self.used_features)
@@ -126,9 +127,9 @@ class AEimpute(object):
                 recon_X = self.decoder_im(embedding)
 
                 # caculate loss 
-                pred_loss = utils.L1_loss(frac_pred[range(self.batch_size),], ref_y.cuda()) 
+                pred_loss = L1_loss(frac_pred[range(self.batch_size),], ref_y.cuda()) 
                 pred_loss_epoch += pred_loss
-                rec_loss = utils.Recon_loss(recon_X, X.cuda())
+                rec_loss = Recon_loss(recon_X, X.cuda())
                 recon_loss_epoch += rec_loss
                 loss = rec_loss + pred_loss
                 loss_epoch += loss   
@@ -149,7 +150,7 @@ class AEimpute(object):
                 print("cAE_loss=%f, pred_loss=%f, recon_loss=%f" % (loss_epoch, pred_loss_epoch, recon_loss_epoch))
 
         ### Plot loss ###
-        utils.SaveLossPlot(self.outdir, metric_logger, loss_type = ['cAE_loss','pred_loss','recon_loss'], output_prex = 'Loss_plot_stage2')
+        SaveLossPlot(self.outdir, metric_logger, loss_type = ['cAE_loss','pred_loss','recon_loss'], output_prex = 'Loss_plot_stage2')
 
         ### Save reconstruction data of ref and target ###
         ref_recon_data = self.write_recon(ref_data)
@@ -176,12 +177,12 @@ class AEimpute(object):
         ref_recon_data.var_names = self.used_features
 
         ### Plot recon ref TSNE plot ###
-        # utils.SavetSNEPlot(self.outdir, ref_recon_data, output_prex='AE_Recon_ref')
+        # SavetSNEPlot(self.outdir, ref_recon_data, output_prex='AE_Recon_ref')
         ### Plot recon ref TSNE plot using missing features ###
         # sc.pp.filter_genes(ref_data, min_cells=0)
         # missing_features = list(ref_data.var[ref_data.var['n_cells']==0].index)
         # if len(missing_features) > 0:
         #     Recon_ref_data_new = ref_recon_data[:,missing_features]
-        #     utils.SavetSNEPlot(self.outdir, Recon_ref_data_new, output_prex='AE_Recon_ref_missingfeature')
+        #     SavetSNEPlot(self.outdir, Recon_ref_data_new, output_prex='AE_Recon_ref_missingfeature')
 
         return ref_recon_data
