@@ -15,8 +15,8 @@ args = parser.parse_args()
 
 def main():
 	dataset = args.dataset
-	### Start Running scpDecon ###
-	print("------Start Running scpDecon------")
+	### Start Running scpDeconv ###
+	print("------Start Running scpDeconv------")
 
 	opt = options.get_option_list(dataset = dataset)
 
