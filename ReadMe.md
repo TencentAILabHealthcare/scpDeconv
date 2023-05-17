@@ -21,7 +21,12 @@ Workflow of scpDeconv are implemented in python.
 
 The running environment of scpDeconv can be installed from docker-hub repository: 
 
+Step1: Pull the docker image from docker-hub:
+
 `docker pull avonwang/scpdeconv:latest`
+
+Step2: Run the docker image (GPU is needed):
+
 `docker run --name scpdeconv --gpus all -it --rm  avonwang/scpdeconv:latest /bin/bash`
 
 ## Usage
@@ -34,7 +39,7 @@ Running script is `main.py`.
 
 Before running scpDeconv, `options.py` need to be edited according to the data used (See Parameters section for more details).
 
-You can download this repo and run the demo task after pull the docker `avonwang/scpdeconv:latest` on your computing machine:  
+You can download this repo and run the demo task after running the docker `avonwang/scpdeconv:latest` on your computing machine:  
 
 	> git clone https://github.com/TencentAILabHealthcare/scpDeconv.git
 	> cd scpDeconv/
