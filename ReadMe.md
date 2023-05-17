@@ -27,7 +27,7 @@ Step1: Pull the docker image from docker-hub:
 
 Step2: Run the docker image (GPU is needed):
 
-`docker run --name scpdeconv --gpus all -it --rm  avonwang/scpdeconv:latest /bin/bash`
+`docker run --name scpdeconv --gpus all -it --rm avonwang/scpdeconv:latest /bin/bash`
 
 ## Usage
 
