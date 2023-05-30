@@ -17,41 +17,44 @@ Workflow of scpDeconv are implemented in python.
 
 [![scipy-1.5.4](https://img.shields.io/badge/scipy-1.5.4-yellowgreen)](https://github.com/scipy/scipy) [![torch-1.10.2](https://img.shields.io/badge/torch-1.10.2-orange)](https://github.com/pytorch/pytorch) [![numpy-1.19.2](https://img.shields.io/badge/numpy-1.19.2-red)](https://github.com/numpy/numpy) [![pandas-1.1.5](https://img.shields.io/badge/pandas-1.1.5-lightgrey)](https://github.com/pandas-dev/pandas) [![scanpy-1.7.2](https://img.shields.io/badge/scanpy-1.7.2-blue)](https://github.com/theislab/scanpy) [![scikit__learn-0.24.2](https://img.shields.io/badge/scikit__learn-0.24.2-green)](https://github.com/scikit-learn/scikit-learn)
 
-### Installation
+### Installation and Usage
 
 The running environment of scpDeconv can be installed from docker-hub repository: 
 
 Step1: Pull the docker image from docker-hub:
 
-`docker pull avonwang/scpdeconv:latest`
+	> docker pull avonwang/scpdeconv:latest
 
 Step2: Run the docker image (GPU is needed):
 
-`docker run --name scpdeconv --gpus all -it --rm avonwang/scpdeconv:latest /bin/bash`
+	> docker run --name scpdeconv --gpus all -it --rm avonwang/scpdeconv:latest /bin/bash
 
-## Usage
-
-Some demo files to run the deconvolution task can be found in the `data` folder.   
-
-Source codes of scpDeconv can be found in the `model` folder. 
-
-Running script is `main.py`. 
-
-Before running scpDeconv, `options.py` need to be edited according to the data used (See Parameters section for more details).
-
-You can download this repo and run the demo task after running the docker `avonwang/scpdeconv:latest` on your computing machine:  
+Step3: Download this repository:  
 
 	> git clone https://github.com/TencentAILabHealthcare/scpDeconv.git
+
+Step4: Run the demo task (murine_cellline) within the docker container on your computing machine:
+
 	> cd scpDeconv/
     > python3 main.py --dataset murine_cellline
+
+### Instuctions
+
+- The demo files to run the deconvolution task can be found in the `data/murine_cellline` folder.   
+
+- Source codes of scpDeconv can be found in the `model` folder. 
+
+- Running script is `main.py`. 
+
+- Before running scpDeconv, `options.py` can be edited according to the data used (See Parameters section for more details).
+
+- The result files of the demo task will be stored in the `Result/murine_cellline` folder.
 
 ## Parameters
 
 The parameters of scpDeconv are listed in `options.py` script, which need to be edited according to the data used in your deconvolution task.
 
 ### Input parameters
-
-
 
 - `data_dir`: data path for input files (single cell proteomic data and tissue proteomic data need to stay in the same data path)
 
@@ -109,9 +112,9 @@ The parameters of scpDeconv are listed in `options.py` script, which need to be 
 
 
 
-- `path`: data path for output files
+- `SaveResultsDir`: data path for output files
 
-- `target_predicted_fraction.csv`: output file for predicted cell type proportions
+- `target_predicted_fractions.csv`: output file for predicted cell type proportions
 
 ## Data
 
@@ -127,7 +130,7 @@ A h5ad file is needed for input tissue proteomic data. The protein name or ID ne
 
 ### Output prediction results format
 
-The output prediction results will be saved in csv format and named `target_predicted_fraction.csv`:
+The output prediction results will be saved in csv format and named `target_predicted_fractions.csv`:
 
 sample_ID |	cell_type1 | cell_type2 | cell_type3 | cell_type4 | cell_type5 | cell_type6
 --- | --- | --- | --- | --- | --- | ---
@@ -137,7 +140,7 @@ sample3 | 0.11173443 | 0.19791068 | 0.043168757 | 0.24210045 | 0.18518583 | 0.21
 
 Note:
 	
-1. The expression matrixs of single cell proteomic data and tissue proteomic data are protein abundance matrixs (normalised).
+1. The expression matrixs of single cell proteomic data and tissue proteomic data are protein abundance matrixs (normalized).
 2. The cell type labels of single cell proteomic data are required, while the corresponding cell type proportions of tissue proteomic data are optional and will only be used in the calculation of prediction accuracy.
 3. The protein name/ID of input single cell proteomic data and tissue proteomic data must keep the same format and source. 
 
@@ -145,7 +148,7 @@ For more details, please refer to paper.
 
 ## Time Cost
 
-Taking demo murine_cellline data (4000 pseudo-samples) and default parameters as an example, typical running time on a "normal" desktop computer is about 3 minutes.
+Taking demo murine_cellline data (1000 pseudo-target-samples) and default parameters as an example, typical running time on a "normal" desktop computer is about 3 minutes.
 
 ## Disclaimer
 
