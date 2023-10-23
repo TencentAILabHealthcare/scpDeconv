@@ -168,7 +168,7 @@ All rights reserved.
 
 If you find our work helpful in your resarch or work, please cite us.
 
-Wang F, Yang F, Huang L K, et al. Deep Domain Adversarial Neural Network for the Deconvolution of Cell Type Mixtures in Tissue Proteome Profiling[J]. bioRxiv, 2022.
+Wang, F., Yang, F., Huang, L. et al. Deep domain adversarial neural network for the deconvolution of cell type mixtures in tissue proteome profiling. Nat Mach Intell (2023). https://doi.org/10.1038/s42256-023-00737-y
 
 ## Questions
 
