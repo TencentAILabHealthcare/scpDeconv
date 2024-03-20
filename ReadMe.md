@@ -60,13 +60,13 @@ The parameters of scpDeconv are listed in `options.py` script, which need to be 
 
 
 
-- `ref_dataset_name`: file name of single cell proteimic data
+- `ref_dataset_name`: expression file name of single cell proteimic data (.h5ad or .csv format)
 
+- `ref_metadata_name`: metadata file name of single cell proteimic data (.csv format)
 
+- `target_dataset_name`: expression file name of tissue proteomic data (.h5ad or .csv format)
 
-- `target_dataset_name`: file name of tissue proteomic data
-
-
+- `target_metadata_name`: metadata file name of tissue proteomic data (.csv format)
 
 - `random_type`: column name in metadata of AnnData which lists cell type labels for single cell proteomic data
 
@@ -118,15 +118,19 @@ The parameters of scpDeconv are listed in `options.py` script, which need to be 
 
 ## Data
 
-Input single cell proteomic data are in h5ad format. Target data are in h5ad or csv format. Prediction results will be saved in csv format.
+Input single cell proteomic data are in h5ad or csv format. Target data are in h5ad or csv format. Prediction results will be saved in csv format.
 
 ### Input single cell proteomic data format
 
-A h5ad file is needed for input single cell proteomic data. The cell type labels of single cells need to be stored in obs of h5ad. The protein name or ID need to be kept in var_names of h5ad.
+H5ad or csv files are needed for input single cell proteomic data. 
+
+If single cell proteomic data are in h5ad format, cell metadata including celltype labels need to be stored in obs of Anndata object. The protein name or ID need to be kept in var_names of h5ad.
+
+If single cell proteomic data are in csv format, an extra csv file with cell metadata information need to be provided. And the protein name or ID need to be kept in the column name of csv file.
 
 ### Input tissue proteomic data format
 
-A h5ad file is needed for input tissue proteomic data. The protein name or ID need to be kept in var_names of h5ad.
+A h5ad or csv file is needed for input tissue proteomic data. The protein name or ID need to be kept in var_names of h5ad or in the column name of csv file.
 
 ### Output prediction results format
 
@@ -168,7 +172,7 @@ All rights reserved.
 
 If you find our work helpful in your resarch or work, please cite us.
 
-Wang F, Yang F, Huang L K, et al. Deep Domain Adversarial Neural Network for the Deconvolution of Cell Type Mixtures in Tissue Proteome Profiling[J]. bioRxiv, 2022.
+Wang, F., Yang, F., Huang, L. et al. Deep domain adversarial neural network for the deconvolution of cell type mixtures in tissue proteome profiling. Nat Mach Intell (2023). https://doi.org/10.1038/s42256-023-00737-y
 
 ## Questions
 

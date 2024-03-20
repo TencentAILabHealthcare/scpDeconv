@@ -1,10 +1,13 @@
 import os
 import sys
-# sys.path.append('/apdcephfs/private_gelseywang/scDeconvolution/Script/git/scpDeconv/model')
+# sys.path.append('/apdcephfs/private_gelseywang/scDeconvolution/scpDeconv')
 # os.chdir('/apdcephfs/private_gelseywang/scDeconvolution/Script/git/scpDeconv')
 import argparse
 import options
-from model import *
+from model.refer_mixup import *
+from model.AEimpute_model import *
+from model.DANN_model import *
+from model.utils import *
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--dataset", type=str, default='murine_cellline', help='The name of benchmarking datasets')
@@ -14,7 +17,6 @@ def main():
 	dataset = args.dataset
 	### Start Running scpDeconv ###
 	print("------Start Running scpDeconv------")
-
 	opt = options.get_option_list(dataset = dataset)
 
 	### Run Stage 1 ###

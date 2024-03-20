@@ -8,7 +8,9 @@ def get_option_list(dataset):
 		# Input parameters
 		option_list['data_dir']='./data/human_breast_atlas_PP/'
 		option_list['ref_dataset_name'] = 'Human_Breast_Atlas_scProteome_normed_aligned_individual1.h5ad'
+		option_list['ref_metadata_name'] = None
 		option_list['target_dataset_name'] = 'Human_Breast_Atlas_scProteome_normed_aligned_individual3.h5ad'
+		option_list['target_metadata_name'] = None
 		option_list['random_type']="cell_type"
 		option_list['type_list']=None
 		# Training parameters
@@ -26,8 +28,10 @@ def get_option_list(dataset):
 	elif dataset == 'murine_cellline':
 		# Input parameters
 		option_list['data_dir']='./data/murine_cellline/'
-		option_list['ref_dataset_name'] = 'murine_N2_SCP.h5ad'
-		option_list['target_dataset_name'] = 'murine_nanoPOTS_SCP.h5ad'
+		option_list['ref_dataset_name'] = 'murine_N2_SCP_exp.csv'
+		option_list['ref_metadata_name'] = 'murine_N2_SCP_meta.csv'
+		option_list['target_dataset_name'] = 'murine_nanoPOTS_SCP_exp.csv'
+		option_list['target_metadata_name'] = 'murine_nanoPOTS_SCP_meta.csv'
 		option_list['random_type']="CellType"
 		option_list['type_list']=['C10','SVEC','RAW']
 		# Training parameters
@@ -46,7 +50,9 @@ def get_option_list(dataset):
 		# Input parameters
 		option_list['data_dir']='./data/human_cellline/'
 		option_list['ref_dataset_name'] = 'pSCoPE_Huffman_PDAC+pSCoPE_Leduc+SCoPE2_Leduc_integrated_SCP.h5ad'
+		option_list['ref_metadata_name'] = None
 		option_list['target_dataset_name'] = 'T-SCP+plexDIA_integrated_SCP.h5ad'
+		option_list['target_metadata_name'] = None
 		option_list['random_type']="cell_type"
 		option_list['type_list']=None
 		# Training parameters

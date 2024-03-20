@@ -141,7 +141,7 @@ class DANN(object):
                 # caculate loss 
                 pred_loss = L1_loss(frac_pred, source_y.cuda())       
                 pred_loss_epoch += pred_loss.data.item()
-                disc_loss = criterion_da(domain_pred_source, source_label) + criterion_da(domain_pred_target, target_label)
+                disc_loss = criterion_da(domain_pred_source, source_label[0:domain_pred_source.shape[0],]) + criterion_da(domain_pred_target, target_label[0:domain_pred_target.shape[0],])
                 disc_loss_epoch += disc_loss.data.item()
                 loss = pred_loss + disc_loss
 
@@ -156,7 +156,7 @@ class DANN(object):
                 domain_pred_target = self.discriminator_da(embedding_target)
 
                 # caculate loss 
-                disc_loss_DA = criterion_da(domain_pred_target, source_label) + criterion_da(domain_pred_source, target_label) 
+                disc_loss_DA = criterion_da(domain_pred_target, source_label[0:domain_pred_target.shape[0],]) + criterion_da(domain_pred_source, target_label[0:domain_pred_source.shape[0],]) 
                 disc_loss_DA_epoch += disc_loss_DA.data.item()
 
                 # update weights

@@ -14,7 +14,9 @@ class ReferMixup(object):
     def __init__(self, option_list):  
         self.data_path = option_list['data_dir']
         self.ref_dataset_name = option_list['ref_dataset_name']
+        self.ref_metadata_name = option_list['ref_metadata_name']
         self.target_dataset_name = option_list['target_dataset_name']
+        self.target_metadata_name = option_list['target_metadata_name']
         self.random_type = option_list['random_type']
         self.type_list = option_list['type_list']
         self.train_sample_num = option_list['ref_sample_num']
@@ -28,11 +30,11 @@ class ReferMixup(object):
     def mixup(self):
 
         # mixup reference datasets and simulate pseudo-bulk train data
-        train_data_x, train_data_y = self.mixup_dataset(self.ref_dataset_name, self.train_sample_num)
+        train_data_x, train_data_y = self.mixup_dataset(self.ref_dataset_name, self.ref_metadata_name, self.train_sample_num)
 
         # mixup to simulate pseudo target data or get real target data
         if self.target_type == "simulated":
-            target_data_x, target_data_y = self.mixup_dataset(self.target_dataset_name, self.target_sample_num)
+            target_data_x, target_data_y = self.mixup_dataset(self.target_dataset_name, self.target_metadata_name, self.target_sample_num)
             target_data = ad.AnnData(X=target_data_x.to_numpy(), obs=target_data_y)
             target_data.var_names = target_data_x.columns
 
@@ -84,12 +86,12 @@ class ReferMixup(object):
 
         return sim_data
 
-    def mixup_dataset(self, dataset, sample_num):
+    def mixup_dataset(self, dataset, metadata, sample_num):
 
         sim_data_x = []
         sim_data_y = []
 
-        ref_data_x, ref_data_y = self.load_ref_dataset(dataset)
+        ref_data_x, ref_data_y = self.load_ref_dataset(dataset, metadata)
 
         for i in range(int(sample_num)):
             sample, label = self.mixup_cells(ref_data_x, ref_data_y, self.type_list)
@@ -107,57 +109,102 @@ class ReferMixup(object):
 
         return sim_data_x, sim_data_y
 
-    def load_ref_dataset(self, dataset):
+    def load_ref_dataset(self, dataset, metadata):
         
-        filename = os.path.join(self.data_path, dataset)
+        if ".h5ad" in dataset:
+            filename = os.path.join(self.data_path, dataset)
 
-        try:
-            data_h5ad = ad.read_h5ad(filename)
-            # Extract celltypes
-            if self.type_list == None:
-                self.type_list = list(set(data_h5ad.obs[self.random_type].tolist()))
-            data_h5ad = data_h5ad[data_h5ad.obs[self.random_type].isin(self.type_list)]
-        except FileNotFoundError as e:
-            print(f"No such h5ad file found for [cyan]{dataset}")
-            sys.exit(e)
+            try:
+                data_h5ad = ad.read_h5ad(filename)
+                # Extract celltypes
+                if self.type_list == None:
+                    self.type_list = list(set(data_h5ad.obs[self.random_type].tolist()))
+                data_h5ad = data_h5ad[data_h5ad.obs[self.random_type].isin(self.type_list)]
+            except FileNotFoundError as e:
+                print(f"No such h5ad file found for [cyan]{dataset}")
+                sys.exit(e)
 
-        try:
-            data_y = pd.DataFrame(data_h5ad.obs[self.random_type])
-            data_y.reset_index(inplace=True, drop=True)
-        except Exception as e:
-            print(f"Celltype attribute not found for [cyan]{dataset}")
-            sys.exit(e)
+            try:
+                data_y = pd.DataFrame(data_h5ad.obs[self.random_type])
+                data_y.reset_index(inplace=True, drop=True)
+            except Exception as e:
+                print(f"Celltype attribute not found for [cyan]{dataset}")
+                sys.exit(e)
 
-        if scipy.sparse.issparse(data_h5ad.X):
-            data_x = pd.DataFrame(data_h5ad.X.todense())
-        else:
-            data_x = pd.DataFrame(data_h5ad.X)
+            if scipy.sparse.issparse(data_h5ad.X):
+                data_x = pd.DataFrame(data_h5ad.X.todense())
+            else:
+                data_x = pd.DataFrame(data_h5ad.X)
+            
+            data_x = data_x.fillna(0) # fill na with 0    
+            data_x.index = data_h5ad.obs_names
+            data_x.columns = data_h5ad.var_names
+
+            return data_x, data_y
+
+        elif ".csv" in dataset:
+            filename = os.path.join(self.data_path, dataset)
+
+            try:
+                data_x = pd.read_csv(filename, header=0, index_col=0)
+            except FileNotFoundError as e:
+                print(f"No such expression csv file found for [cyan]{dataset}")
+                sys.exit(e)
         
-        data_x = data_x.fillna(0) # fill na with 0    
-        data_x.index = data_h5ad.obs_names
-        data_x.columns = data_h5ad.var_names
+            data_x = data_x.fillna(0) # fill na with 0    
+            
+            if metadata is not None:
+                metadata_filename = os.path.join(self.data_path, metadata)
+                try:
+                    data_y = pd.read_csv(metadata_filename, header=0, index_col=0)
+                except Exception as e:
+                    print(f"Celltype attribute not found for [cyan]{dataset}")
+                    sys.exit(e)
+            else:
+                print(f"Metadata file is not provided for [cyan]{dataset}")
+                sys.exit(1)
 
-        return data_x, data_y
+            return data_x, data_y
 
     def load_real_data(self, dataset):
         
-        filename = os.path.join(self.data_path, dataset)
+        if ".h5ad" in dataset:
+            filename = os.path.join(self.data_path, dataset)
 
-        try:
-            data_h5ad = ad.read_h5ad(filename)
-        except FileNotFoundError as e:
-            print(f"No such h5ad file found for [cyan]{dataset}.")
-            sys.exit(e)
+            try:
+                data_h5ad = ad.read_h5ad(filename)
+            except FileNotFoundError as e:
+                print(f"No such h5ad file found for [cyan]{dataset}.")
+                sys.exit(e)
+            
+            if scipy.sparse.issparse(data_h5ad.X):
+                data_h5ad.X = pd.DataFrame(data_h5ad.X.todense()).fillna(0)
+            else:
+                data_h5ad.X = pd.DataFrame(data_h5ad.X).fillna(0)
         
-        if scipy.sparse.issparse(data_h5ad.X):
-            data_h5ad.X = pd.DataFrame(data_h5ad.X.todense()).fillna(0)
-        else:
-            data_h5ad.X = pd.DataFrame(data_h5ad.X).fillna(0)
-    
-        if self.normalize:
-            data_h5ad.X = sample_normalize(data_h5ad.X, normalize_method=self.normalize)
+            if self.normalize:
+                data_h5ad.X = sample_normalize(data_h5ad.X, normalize_method=self.normalize)
 
-        return data_h5ad
+            return data_h5ad
+
+        elif ".csv" in dataset:
+            filename = os.path.join(self.data_path, dataset)
+
+            try:
+                data_x = pd.read_csv(filename, header=0, index_col=0)
+            except FileNotFoundError as e:
+                print(f"No such target expression csv file found for [cyan]{dataset}.")
+                sys.exit(e)
+            
+            data_x = data_x.fillna(0) # fill na with 0    
+            
+            data_h5ad = ad.AnnData(X=data_x)
+            data_h5ad.var_names = data_x.columns
+
+            if self.normalize:
+                data_h5ad.X = sample_normalize(data_h5ad.X, normalize_method=self.normalize)
+
+            return data_h5ad
 
     def mixup_fraction(self, celltype_num):
 
